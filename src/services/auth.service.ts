@@ -13,26 +13,21 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = this.getApiUrl();
+  private readonly API_URL =
+    window.location.hostname === 'localhost'
+      ? 'http://localhost:5000/api/auth'
+      : 'https://depthly-backend.onrender.com/api/auth';
+
   private readonly TOKEN_KEY = 'depthly_token';
   private readonly USER_KEY = 'depthly_user';
 
   private currentUserSignal = signal<User | null>(this.loadSession());
-
   currentUser = computed(() => this.currentUserSignal());
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {}
-
-  private getApiUrl(): string {
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      return 'http://localhost:5000/api/auth';
-    }
-    // For production, set this to your deployed backend URL
-    return 'https://your-backend-url.com/api/auth';
-  }
 
   private loadSession(): User | null {
     const stored = localStorage.getItem(this.USER_KEY);
