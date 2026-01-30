@@ -6,24 +6,35 @@ import { config } from './config.js';
 
 const app = express();
 
-/* -------------------- MIDDLEWARE -------------------- */
+/* -------------------- CORS -------------------- */
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://depthly.vercel.app',
+  'https://depthly-puce.vercel.app'
+];
+
 app.use(
   cors({
-    origin: [
-      'http://localhost:4200',
-      'https://depthly-ckoazhchc-rashmika-sharmas-projects.vercel.app',
-      'https://depthly.vercel.app'
-    ],
+    origin: function (origin, callback) {
+      // Allow server-to-server & tools like Postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   })
 );
 
-// IMPORTANT: handle preflight requests
+// Handle preflight requests
 app.options('*', cors());
 
-
+/* -------------------- MIDDLEWARE -------------------- */
 app.use(express.json());
 
 /* -------------------- ROUTES -------------------- */
@@ -50,9 +61,9 @@ mongoose
 
 /* -------------------- ERROR HANDLER -------------------- */
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error(err.message);
   res.status(500).json({
-    message: 'Something went wrong',
+    message: err.message || 'Something went wrong'
   });
 });
 
