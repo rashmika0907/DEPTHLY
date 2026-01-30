@@ -37,6 +37,10 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
+  isLoggedIn(): boolean {
+  return !!this.getToken();
+}
+
 
   async signup(name: string, email: string, password: string): Promise<boolean> {
     try {
