@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Depthly</title>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            // Warm dark base (Stone)
+            stone: {
+              850: '#1c1917',
+              900: '#1c1917',
+              950: '#0c0a09',
+            },
+            // Human/Organic Primary (Rose/Coral)
+            primary: {
+              400: '#fb7185', // Rose 400
+              500: '#f43f5e', // Rose 500
+              600: '#e11d48', // Rose 600
+            },
+            // Secondary Warmth (Orange/Amber)
+            secondary: {
+              500: '#f97316',
+              600: '#ea580c',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            'slide-down': 'slideDown 0.4s ease-out',
+            'float': 'float 8s ease-in-out infinite',
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'spin-slow': 'spin 3s linear infinite',
+            'shine': 'shine 2s linear infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideDown: {
+              '0%': { opacity: '0', transform: 'translateY(-15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-25px)' },
+            },
+            shine: {
+              '0%': { backgroundPosition: '200% center' },
+              '100%': { backgroundPosition: '-200% center' },
+            }
+          },
+          typography: (theme) => ({
+            DEFAULT: {
+              css: {
+                color: theme('colors.stone.300'),
+                a: {
+                  color: theme('colors.primary.400'),
+                  '&:hover': {
+                    color: theme('colors.primary.500'),
+                  },
+                },
+                strong: {
+                  color: theme('colors.stone.100'),
+                  fontWeight: '700',
+                },
+                h1: {
+                  color: theme('colors.stone.100'),
+                },
+                h2: {
+                  color: theme('colors.stone.100'),
+                  marginTop: '1.5em',
+                  marginBottom: '0.8em',
+                },
+                h3: {
+                  color: theme('colors.stone.200'),
+                },
+                h4: {
+                  color: theme('colors.stone.200'),
+                },
+                code: {
+                  color: theme('colors.primary.300'),
+                },
+                blockquote: {
+                  color: theme('colors.stone.400'),
+                  borderLeftColor: theme('colors.stone.700'),
+                },
+              },
+            },
+          }),
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: #0c0a09; /* Stone 950 */
+      color: #fafaf9; /* Stone 50 */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Custom Scrollbar - Softer */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0c0a09; }
+    ::-webkit-scrollbar-thumb { background: #44403c; border-radius: 99px; } /* Stone 700 */
+    ::-webkit-scrollbar-thumb:hover { background: #57534e; } /* Stone 600 */
+    
+    .typing-cursor::after {
+      content: '●';
+      font-size: 0.8em;
+      margin-left: 2px;
+      animation: blink 1s ease-in-out infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Glass Utilities - Warmer Tint */
+    .glass {
+      background: rgba(28, 25, 23, 0.75); /* Stone 900 */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .glass-card {
+      background: rgba(41, 37, 36, 0.6); /* Stone 800 */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Gradient Text - Warm */
+    .text-gradient {
+      background: linear-gradient(to right, #fb7185, #f472b6, #fb923c); /* Rose to Orange */
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Input autofill fix for dark mode */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px #1c1917 inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/compiler": "https://esm.sh/@angular/compiler@^18.2.0?external=rxjs",
+    "@angular/core": "https://esm.sh/@angular/core@^18.2.0?external=rxjs",
+    "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^18.2.0?external=rxjs",
+    "@angular/router": "https://esm.sh/@angular/router@^18.2.0?external=rxjs",
+    "@angular/forms": "https://esm.sh/@angular/forms@^18.2.0?external=rxjs",
+    "@angular/common": "https://esm.sh/@angular/common@^18.2.0?external=rxjs",
+    "@angular/common/http": "https://esm.sh/@angular/common@^18.2.0/http?external=rxjs",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0?external=rxjs",
+    "marked": "https://esm.sh/marked@^9.1.6",
+    "dompurify": "https://esm.sh/dompurify@^3.0.6"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <app-root></app-root>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
