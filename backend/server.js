@@ -7,7 +7,23 @@ import { config } from './config.js';
 const app = express();
 
 /* -------------------- MIDDLEWARE -------------------- */
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:4200',
+      'https://depthly-ckoazhchc-rashmika-sharmas-projects.vercel.app',
+      'https://depthly.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  })
+);
+
+// IMPORTANT: handle preflight requests
+app.options('*', cors());
+
+
 app.use(express.json());
 
 /* -------------------- ROUTES -------------------- */
