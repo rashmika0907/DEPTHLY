@@ -1,11 +1,12 @@
 import { Component, inject, signal, ElementRef, ViewChild, AfterViewChecked, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { GeminiService, DepthLevel } from '../../services/gemini.service';
 import { HistoryService } from '../../services/history.service';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { MarkdownPipe } from '../../pipes/markdown.pipe';
+
+export type DepthLevel = 'Kids' | 'Teens' | 'Novice' | 'College' | 'Expert';
 
 @Component({
   selector: 'app-explore',
@@ -97,7 +98,7 @@ import { MarkdownPipe } from '../../pipes/markdown.pipe';
                  <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-primary-500/10 text-primary-300 border border-primary-500/20">
                   {{ 'lvl.' + currentLevel() | translate }}
                 </span>
-                <span class="text-xs text-stone-500 font-medium">Gemini 2.5 Flash • {{ currentLangCode() | uppercase }}</span>
+                <span class="text-xs text-stone-500 font-medium">{{ currentLangCode() | uppercase }}</span>
               </div>
             </div>
             
@@ -132,7 +133,6 @@ import { MarkdownPipe } from '../../pipes/markdown.pipe';
   styles: []
 })
 export class ExploreComponent {
-  private gemini = inject(GeminiService);
   private historyService = inject(HistoryService);
   private langService = inject(LanguageService);
 
@@ -186,17 +186,18 @@ export class ExploreComponent {
 
     try {
       const currentLang = this.langService.currentLang();
-      const stream = await this.gemini.generateExplanationStream(this.topic, level, currentLang);
+      // Note: Gemini service has been removed. Implement your own API integration here.
       
       let fullText = '';
       
-      for await (const chunk of stream) {
-        if (this.abortController?.signal.aborted) {
-          break;
-        }
-        fullText += chunk;
-        this.displayText.set(fullText);
-      }
+      // TODO: Implement content generation with your own API
+      // for await (const chunk of stream) {
+      //   if (this.abortController?.signal.aborted) {
+      //     break;
+      //   }
+      //   fullText += chunk;
+      //   this.displayText.set(fullText);
+      // }
       
       if (!this.abortController?.signal.aborted) {
         this.historyService.addEntry(this.topic, level, fullText);
