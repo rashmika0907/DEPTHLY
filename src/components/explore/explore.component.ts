@@ -1,6 +1,7 @@
 import { Component, inject, signal, ElementRef, ViewChild, AfterViewChecked, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { HistoryService } from '../../services/history.service';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -133,6 +134,7 @@ export type DepthLevel = 'Kids' | 'Teens' | 'Novice' | 'College' | 'Expert';
   styles: []
 })
 export class ExploreComponent {
+  private http = inject(HttpClient);
   private historyService = inject(HistoryService);
   private langService = inject(LanguageService);
 
@@ -186,30 +188,81 @@ export class ExploreComponent {
 
     try {
       const currentLang = this.langService.currentLang();
-      // Note: Gemini service has been removed. Implement your own API integration here.
       
-      let fullText = '';
+      // Construct prompt based on depth level
+      const prompt = this.constructPrompt(this.topic, level, currentLang);
       
-      // TODO: Implement content generation with your own API
-      // for await (const chunk of stream) {
-      //   if (this.abortController?.signal.aborted) {
-      //     break;
-      //   }
-      //   fullText += chunk;
-      //   this.displayText.set(fullText);
-      // }
+      // Call backend generate endpoint
+      const response = await fetch('https://depthly-backend.onrender.com/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          level,
+          language: currentLang
+        }),
+        signal: this.abortController.signal
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to generate content');
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.message);
+      }
+
+      const fullText = data.text || '';
+      this.displayText.set(fullText);
       
       if (!this.abortController?.signal.aborted) {
         this.historyService.addEntry(this.topic, level, fullText);
       }
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      this.displayText.set(this.langService.translate('explore.error'));
+      const errorMessage = err.name === 'AbortError' 
+        ? 'Generation stopped'
+        : this.langService.translate('explore.error');
+      this.displayText.set(errorMessage);
     } finally {
       this.isGenerating.set(false);
       this.abortController = null;
     }
+  }
+
+  private constructPrompt(topic: string, level: DepthLevel, language: string): string {
+    const langNames: Record<string, string> = {
+      en: 'English',
+      es: 'Spanish',
+      fr: 'French',
+      de: 'German',
+      ja: 'Japanese',
+      zh: 'Chinese',
+      pt: 'Portuguese',
+      ru: 'Russian',
+    };
+
+    const langName = langNames[language] || language;
+
+    const levelInstructions: Record<DepthLevel, string> = {
+      'Kids': 'Explain this topic in very simple terms for a 6-year-old child, using simple words and fun examples.',
+      'Teens': 'Explain this topic for a teenager (13-17 years old) in an engaging and accessible way.',
+      'Novice': 'Explain this topic for a beginner with no prior knowledge in this area.',
+      'College': 'Provide a comprehensive explanation suitable for a college-level student.',
+      'Expert': 'Provide a detailed, technical explanation for an expert in this field.',
+    };
+
+    return `${levelInstructions[level]}
+
+Topic: ${topic}
+
+Respond in ${langName}.`;
   }
 
   stopGeneration() {

@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
+import generateRoutes from './routes/generate.js';
 import { config } from './config.js';
 
 const app = express();
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/generate', generateRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
