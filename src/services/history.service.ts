@@ -20,14 +20,17 @@ export class HistoryService {
 
   constructor() {
     // Reactively load history whenever the current user changes
-    effect(() => {
-      const user = this.authService.currentUser();
-      if (user) {
-        this.loadHistoryForUser(user.id);
-      } else {
-        this.history.set([]);
-      }
-    });
+    effect(
+      () => {
+        const user = this.authService.currentUser();
+        if (user) {
+          this.loadHistoryForUser(user.id);
+        } else {
+          this.history.set([]);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   /**
