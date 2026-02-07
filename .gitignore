@@ -1,0 +1,12 @@
+node_modules/
+.env
+data/
+*.log
+debug_script.js
+list_api_models.js
+test_models.js
+models_list.txt
+error_response.txt
+best_model.txt
+dist/
+.DS_Store
